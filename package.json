@@ -1,0 +1,41 @@
+{
+  "name": "crafter-launcher",
+  "version": "1.0.0",
+  "description": "Sleek, serverless, high-performance P2P Minecraft Launcher.",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder && rmdir /s /q dist\\win-unpacked",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "adm-zip": "^0.5.17",
+    "minecraft-launcher-core": "^3.18.2"
+  },
+  "devDependencies": {
+    "electron": "^42.3.1",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "com.crafter.launcher",
+    "productName": "Crafter Launcher",
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "logo.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "shortcutName": "Crafter Launcher",
+      "createDesktopShortcut": "always",
+      "createStartMenuShortcut": true
+    }
+  }
+}

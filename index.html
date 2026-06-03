@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crafter Launcher</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Frameless Titlebar -->
+  <header class="titlebar">
+    <div class="titlebar-logo">
+      <img src="logo.png" alt="Logo" width="20" height="20" style="margin-right: 8px; border-radius: 4px; filter: drop-shadow(0 0 4px rgba(0, 245, 212, 0.5));">
+      <span>Crafter Launcher</span>
+    </div>
+    <div class="titlebar-drag-region"></div>
+    <div class="titlebar-controls">
+      <button class="control-btn" id="btn-minimize" title="Minimize">
+        <i data-lucide="minus"></i>
+      </button>
+      <button class="control-btn" id="btn-maximize" title="Maximize">
+        <i data-lucide="square"></i>
+      </button>
+      <button class="control-btn close-btn" id="btn-close" title="Close">
+        <i data-lucide="x"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <div class="app-container">
+
+    <!-- Login Screen Overlay -->
+    <div class="login-overlay active" id="login-overlay">
+      <div class="login-card">
+        <div class="login-header">
+          <div class="login-logo" style="margin-bottom: 15px; display: flex; justify-content: center;">
+            <img src="logo.png" alt="Logo" width="80" height="80" style="border-radius: 16px; filter: drop-shadow(0 0 15px rgba(0, 245, 212, 0.6));">
+          </div>
+          <h1 class="space-font">Crafter Launcher</h1>
+          <p>Welcome, explorer. Enter your offline handle to begin.</p>
+        </div>
+        
+        <div class="login-body">
+          <div class="avatar-preview-container">
+            <img id="login-avatar" src="https://minotar.net/helm/Steve/128.png" alt="Minecraft Skin Avatar">
+            <div class="avatar-glow"></div>
+          </div>
+          
+          <div class="input-group">
+            <label for="username-input">Offline Username</label>
+            <div class="input-wrapper">
+              <i data-lucide="user" class="input-icon"></i>
+              <input type="text" id="username-input" placeholder="e.g. Steve" maxlength="16" value="Steve">
+            </div>
+          </div>
+          
+          <button class="primary-btn btn-full" id="btn-login">
+            <span>Login Offline</span>
+            <i data-lucide="arrow-right"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar hidden" id="sidebar">
+      <div class="profile-section">
+        <div class="profile-avatar">
+          <img id="sidebar-avatar" src="https://minotar.net/helm/Steve/64.png" alt="Avatar">
+          <div class="profile-status"></div>
+        </div>
+        <div class="profile-info">
+          <span class="profile-name" id="sidebar-username">Steve</span>
+          <span class="profile-type">Offline Profile</span>
+        </div>
+        <button class="logout-btn" id="btn-logout" title="Change Account">
+          <i data-lucide="log-out"></i>
+        </button>
+      </div>
+
+      <nav class="nav-menu">
+        <button class="nav-item active" data-tab="play">
+          <i data-lucide="home"></i>
+          <span>Dashboard</span>
+        </button>
+        <button class="nav-item" data-tab="versions">
+          <i data-lucide="layers"></i>
+          <span>Versions</span>
+        </button>
+        <button class="nav-item" data-tab="skins">
+          <i data-lucide="shirt"></i>
+          <span>Skins</span>
+        </button>
+        <button class="nav-item" data-tab="mods">
+          <i data-lucide="package"></i>
+          <span>Mods</span>
+        </button>
+        <button class="nav-item" data-tab="settings">
+          <i data-lucide="settings"></i>
+          <span>Settings</span>
+        </button>
+        <button class="nav-item" data-tab="logs">
+          <i data-lucide="terminal"></i>
+          <span>Console Logs</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="version-tag">v1.0.0 (Beta)</div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content hidden" id="main-content">
+      
+      <!-- PLAY / DASHBOARD TAB -->
+      <section class="tab-panel active" id="tab-play" style="overflow-y: auto;">
+        <div class="dashboard-layout">
+          <!-- Left column: Main contents -->
+          <div class="dashboard-main">
+            
+            <!-- Welcoming Section -->
+            <div class="dashboard-welcome" style="margin-bottom: 20px;">
+              <h1 class="space-font" id="dashboard-welcome-title" style="font-size: 26px; font-weight: 800; color: #fff; margin-bottom: 4px;">Rise and mine, Player</h1>
+              <p style="font-size: 13px; color: var(--text-muted);">Pick up where you left off.</p>
+            </div>
+
+            <!-- Quick Play Bar -->
+            <div class="quick-play-bar" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 14px; padding: 18px; display: flex; align-items: center; justify-content: space-between; gap: 20px; backdrop-filter: blur(10px); margin-bottom: 25px;">
+              <div class="quick-play-left" style="display: flex; align-items: center; gap: 12px;">
+                <div id="quick-play-icon-container" style="width: 42px; height: 42px; background: rgba(0, 245, 212, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(0, 245, 212, 0.2); font-size: 20px;">
+                  📦
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 2px;">
+                  <span style="font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">Quick Play</span>
+                  <span id="quick-play-ver" style="font-size: 14px; font-weight: 700; color: #fff;">26.1.2</span>
+                </div>
+              </div>
+              
+              <div class="quick-play-right" style="display: flex; align-items: center; gap: 15px; flex: 1; max-width: 480px; justify-content: flex-end;">
+                <div class="select-wrapper" style="width: 200px; position: relative; display: flex; align-items: center;">
+                  <i data-lucide="git-branch" class="select-icon" style="color: var(--primary); position: absolute; left: 14px; width: 16px; height: 16px; pointer-events: none; z-index: 2;"></i>
+                  <select id="play-version-select" style="background: rgba(8, 6, 16, 0.7); border: 1px solid var(--border-color); color: #fff; padding: 10px 14px 10px 38px; border-radius: 8px; font-size: 13px; width: 100%; cursor: pointer;">
+                    <option value="26.1.2">26.1.2 (Release)</option>
+                    <option value="1.20.4">1.20.4 (Release)</option>
+                    <option value="1.19.4">1.19.4 (Release)</option>
+                    <option value="1.18.2">1.18.2 (Release)</option>
+                    <option value="1.16.5">1.16.5 (Release)</option>
+                  </select>
+                </div>
+                
+                <button class="play-button" id="btn-play" style="width: 150px; height: 40px; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); border: none; border-radius: 8px; color: #fff; font-weight: 700; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 15px var(--primary-glow); transition: all 0.3s ease;">
+                  <i data-lucide="play" style="width: 16px; height: 16px; fill: currentColor;"></i>
+                  <span id="btn-play-text">PLAY GAME</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Launch Progress Block (hidden initially) -->
+            <div class="progress-container hidden" id="launch-progress-container" style="margin-bottom: 25px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 15px 20px; animation: slideUp 0.3s ease;">
+              <div class="progress-details" style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; font-weight: 600; margin-bottom: 8px;">
+                <span class="progress-task" id="progress-task-name" style="color: var(--text-main); max-width: 75%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Preparing launcher files...</span>
+                <span class="progress-percentage" id="progress-percentage-val" style="color: var(--accent-cyan);">0%</span>
+              </div>
+              <div class="progress-bar-track" style="height: 6px; background-color: rgba(8, 6, 16, 0.7); border-radius: 3px; overflow: hidden;">
+                <div class="progress-bar-fill" id="progress-bar-fill" style="height: 100%; width: 0%; background: linear-gradient(90deg, var(--primary) 0%, var(--accent-cyan) 100%); border-radius: 3px; box-shadow: 0 0 10px rgba(0, 245, 212, 0.5); transition: width 0.1s ease-out;"></div>
+              </div>
+            </div>
+
+            <!-- Explore Content Hub -->
+            <div class="content-hub-section" style="margin-bottom: 25px;">
+              <h3 class="space-font" style="font-size: 14px; font-weight: 700; color: var(--accent-cyan); margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                <i data-lucide="compass"></i> Explore Content Hub
+              </h3>
+              <div class="modpacks-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px;">
+                
+                <!-- Card 1 -->
+                <div class="hub-card" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; transition: all 0.3s ease;">
+                  <div style="height: 110px; background-image: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(15,11,30,0.9)), url('https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?q=80&w=300'); background-size: cover; background-position: center; position: relative;">
+                    <div style="position: absolute; bottom: -15px; left: 15px; width: 36px; height: 36px; background: #1c1833; border-radius: 8px; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 4px 10px rgba(0,0,0,0.3);">
+                      <i data-lucide="zap" style="color: var(--accent-cyan); width: 20px; height: 20px;"></i>
+                    </div>
+                  </div>
+                  <div style="padding: 25px 15px 15px 15px; display: flex; flex-direction: column; flex: 1; justify-content: space-between;">
+                    <div>
+                      <strong style="color: #fff; font-size: 13px; display: block; margin-bottom: 4px;">Fabulously Optimized</strong>
+                      <p style="font-size: 11px; color: var(--text-muted); line-height: 1.4; margin-bottom: 15px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">Beautiful graphics, speedy performance and familiar features. Tiny Takeover!</p>
+                    </div>
+                    <div style="display: flex; align-items: center; justify-content: space-between; font-size: 10px; color: var(--text-muted);">
+                      <span>by robotkoer</span>
+                      <span style="display: flex; align-items: center; gap: 3px; color: var(--primary);"><i data-lucide="download" style="width: 10px; height: 10px;"></i> 12.8M</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="hub-card" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; transition: all 0.3s ease;">
+                  <div style="height: 110px; background-image: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(15,11,30,0.9)), url('https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=300'); background-size: cover; background-position: center; position: relative;">
+                    <div style="position: absolute; bottom: -15px; left: 15px; width: 36px; height: 36px; background: #1c1833; border-radius: 8px; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 4px 10px rgba(0,0,0,0.3);">
+                      <i data-lucide="cat" style="color: var(--primary); width: 20px; height: 20px;"></i>
+                    </div>
+                  </div>
+                  <div style="padding: 25px 15px 15px 15px; display: flex; flex-direction: column; flex: 1; justify-content: space-between;">
+                    <div>
+                      <strong style="color: #fff; font-size: 13px; display: block; margin-bottom: 4px;">Cobblemon Modpack [Fabric]</strong>
+                      <p style="font-size: 11px; color: var(--text-muted); line-height: 1.4; margin-bottom: 15px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">The official Fabric modpack for the Cobblemon Pokemon adventure mod.</p>
+                    </div>
+                    <div style="display: flex; align-items: center; justify-content: space-between; font-size: 10px; color: var(--text-muted);">
+                      <span>by CobbledStudios</span>
+                      <span style="display: flex; align-items: center; gap: 3px; color: var(--primary);"><i data-lucide="download" style="width: 10px; height: 10px;"></i> 7.6M</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="hub-card" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; transition: all 0.3s ease;">
+                  <div style="height: 110px; background-image: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(15,11,30,0.9)), url('https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=300'); background-size: cover; background-position: center; position: relative;">
+                    <div style="position: absolute; bottom: -15px; left: 15px; width: 36px; height: 36px; background: #1c1833; border-radius: 8px; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 4px 10px rgba(0,0,0,0.3);">
+                      <i data-lucide="swords" style="color: var(--accent-cyan); width: 20px; height: 20px;"></i>
+                    </div>
+                  </div>
+                  <div style="padding: 25px 15px 15px 15px; display: flex; flex-direction: column; flex: 1; justify-content: space-between;">
+                    <div>
+                      <strong style="color: #fff; font-size: 13px; display: block; margin-bottom: 4px;">Better MC [Fabric] - BMC2</strong>
+                      <p style="font-size: 11px; color: var(--text-muted); line-height: 1.4; margin-bottom: 15px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">A Proper Vanilla+ Modpack. RPG quests, exploration, and new dimensions.</p>
+                    </div>
+                    <div style="display: flex; align-items: center; justify-content: space-between; font-size: 10px; color: var(--text-muted);">
+                      <span>by SHXRKIE</span>
+                      <span style="display: flex; align-items: center; gap: 3px; color: var(--primary);"><i data-lucide="download" style="width: 10px; height: 10px;"></i> 2.3M</span>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- Servers & Playtime Double column Row -->
+            <div style="display: grid; grid-template-columns: 1fr; gap: 20px; margin-bottom: 10px;">
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+                
+                <!-- Servers widget -->
+                <div class="dashboard-widget" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px;">
+                  <h3 class="space-font" style="font-size: 13px; font-weight: 700; color: #fff; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                    <i data-lucide="server" style="color: var(--primary); width: 16px; height: 16px;"></i> Multiplayer Servers
+                  </h3>
+                  <div style="display: flex; flex-direction: column; gap: 10px;">
+                    <!-- Server item 1 -->
+                    <div style="display: flex; align-items: center; gap: 10px; padding: 8px; border-radius: 8px; background: rgba(8,6,16,0.3); border: 1px solid rgba(255,255,255,0.02);">
+                      <div style="width: 32px; height: 32px; background: var(--secondary); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: bold; color: var(--accent-cyan); font-size: 10px;">XY</div>
+                      <div style="display: flex; flex-direction: column; flex: 1; min-width: 0;">
+                        <span style="font-size: 11px; font-weight: 700; color: #fff; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">XY.TWERION.NET</span>
+                        <span style="font-size: 9px; color: var(--text-muted);">86 Players | 1.8.9 - 1.21</span>
+                      </div>
+                      <span style="font-size: 9px; font-weight: 700; color: var(--accent-cyan); background: rgba(0, 245, 212, 0.1); padding: 2px 6px; border-radius: 4px;">#1 Bedwars</span>
+                    </div>
+
+                    <!-- Server item 2 -->
+                    <div style="display: flex; align-items: center; gap: 10px; padding: 8px; border-radius: 8px; background: rgba(8,6,16,0.3); border: 1px solid rgba(255,255,255,0.02);">
+                      <div style="width: 32px; height: 32px; background: var(--secondary); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: bold; color: var(--primary); font-size: 10px;">VC</div>
+                      <div style="display: flex; flex-direction: column; flex: 1; min-width: 0;">
+                        <span style="font-size: 11px; font-weight: 700; color: #fff; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">VillagerCraft PvP</span>
+                        <span style="font-size: 9px; color: var(--text-muted);">11 Players | 1.21.0</span>
+                      </div>
+                      <span style="font-size: 9px; font-weight: 700; color: var(--primary); background: rgba(157, 78, 221, 0.1); padding: 2px 6px; border-radius: 4px;">#2 Arena</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Playtime Widget -->
+                <div class="dashboard-widget" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; display: flex; flex-direction: column;">
+                  <h3 class="space-font" style="font-size: 13px; font-weight: 700; color: #fff; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                    <i data-lucide="clock" style="color: var(--accent-cyan); width: 16px; height: 16px;"></i> Your Playtime
+                  </h3>
+                  <div style="display: flex; align-items: baseline; gap: 5px; margin-bottom: 15px;">
+                    <span style="font-size: 22px; font-weight: 800; color: #fff; font-family: 'Space Grotesk', sans-serif;">2.4hs</span>
+                    <span style="font-size: 10px; color: var(--text-muted); font-weight: 600;">hours played this week</span>
+                  </div>
+                  <!-- Mini Chart -->
+                  <div style="display: flex; justify-content: space-between; align-items: flex-end; flex: 1; height: 70px; padding: 0 10px;">
+                    <div class="playtime-bar" style="width: 14px; background: var(--border-color); height: 15%; border-radius: 3px; display: flex; align-items: flex-end; justify-content: center; position: relative;" title="Thu"><span style="position: absolute; bottom: -15px; font-size: 8px; color: var(--text-muted);">T</span></div>
+                    <div class="playtime-bar" style="width: 14px; background: var(--border-color); height: 35%; border-radius: 3px; display: flex; align-items: flex-end; justify-content: center; position: relative;" title="Fri"><span style="position: absolute; bottom: -15px; font-size: 8px; color: var(--text-muted);">F</span></div>
+                    <div class="playtime-bar" style="width: 14px; background: var(--border-color); height: 60%; border-radius: 3px; display: flex; align-items: flex-end; justify-content: center; position: relative;" title="Sat"><span style="position: absolute; bottom: -15px; font-size: 8px; color: var(--text-muted);">S</span></div>
+                    <div class="playtime-bar" style="width: 14px; background: var(--primary); height: 90%; border-radius: 3px; display: flex; align-items: flex-end; justify-content: center; position: relative;" title="Sun"><span style="position: absolute; bottom: -15px; font-size: 8px; color: var(--primary); font-weight: 700;">S</span></div>
+                    <div class="playtime-bar" style="width: 14px; background: var(--border-color); height: 40%; border-radius: 3px; display: flex; align-items: flex-end; justify-content: center; position: relative;" title="Mon"><span style="position: absolute; bottom: -15px; font-size: 8px; color: var(--text-muted);">M</span></div>
+                    <div class="playtime-bar" style="width: 14px; background: var(--border-color); height: 75%; border-radius: 3px; display: flex; align-items: flex-end; justify-content: center; position: relative;" title="Tue"><span style="position: absolute; bottom: -15px; font-size: 8px; color: var(--text-muted);">T</span></div>
+                    <div class="playtime-bar" style="width: 14px; background: var(--border-color); height: 20%; border-radius: 3px; display: flex; align-items: flex-end; justify-content: center; position: relative;" title="Wed"><span style="position: absolute; bottom: -15px; font-size: 8px; color: var(--text-muted);">W</span></div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Right column: News scroll sidebar -->
+          <div class="dashboard-sidebar">
+            <h3 class="space-font" style="font-size: 13px; font-weight: 700; color: #fff; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+              <i data-lucide="newspaper" style="color: var(--accent-cyan); width: 16px; height: 16px;"></i> Latest News
+            </h3>
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+              
+              <!-- News item 1 -->
+              <div class="news-item-box" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 10px; overflow: hidden; display: flex; gap: 10px; padding: 10px; transition: all 0.3s ease;">
+                <div style="width: 50px; height: 50px; border-radius: 6px; background-image: url('https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?q=80&w=100'); background-size: cover; background-position: center; flex-shrink: 0;"></div>
+                <div style="display: flex; flex-direction: column; justify-content: center; min-width: 0;">
+                  <strong style="color: #fff; font-size: 11px; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-bottom: 2px;">Sabine's Realms Takeover</strong>
+                  <span style="font-size: 9px; color: var(--text-muted);">MAY 29, 2026</span>
+                </div>
+              </div>
+
+              <!-- News item 2 -->
+              <div class="news-item-box" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 10px; overflow: hidden; display: flex; gap: 10px; padding: 10px; transition: all 0.3s ease;">
+                <div style="width: 50px; height: 50px; border-radius: 6px; background-image: url('https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=100'); background-size: cover; background-position: center; flex-shrink: 0;"></div>
+                <div style="display: flex; flex-direction: column; justify-content: center; min-width: 0;">
+                  <strong style="color: #fff; font-size: 11px; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-bottom: 2px;">Catch Me Outside Challenge</strong>
+                  <span style="font-size: 9px; color: var(--text-muted);">APR 24, 2026</span>
+                </div>
+              </div>
+
+              <!-- News item 3 -->
+              <div class="news-item-box" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 10px; overflow: hidden; display: flex; gap: 10px; padding: 10px; transition: all 0.3s ease;">
+                <div style="width: 50px; height: 50px; border-radius: 6px; background-image: url('https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=100'); background-size: cover; background-position: center; flex-shrink: 0;"></div>
+                <div style="display: flex; flex-direction: column; justify-content: center; min-width: 0;">
+                  <strong style="color: #fff; font-size: 11px; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-bottom: 2px;">The Herdcraft Ecosystem</strong>
+                  <span style="font-size: 9px; color: var(--text-muted);">APR 1, 2026</span>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Xyrios promo card -->
+            <div style="background: linear-gradient(135deg, rgba(157, 78, 221, 0.1) 0%, rgba(0, 245, 212, 0.05) 100%); border: 1px solid var(--border-color); border-radius: 12px; padding: 15px; margin-top: 20px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <span class="space-font" style="font-size: 11px; font-weight: 700; color: #fff; letter-spacing: 1px;">XYRIOS SERVICES</span>
+                <i data-lucide="arrow-up-right" style="color: var(--accent-cyan); width: 12px; height: 12px;"></i>
+              </div>
+              <p style="font-size: 10px; color: var(--text-muted); line-height: 1.4;">Access unified skin databases, capes repository, and server trackers.</p>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- VERSIONS TAB -->
+      <section class="tab-panel" id="tab-versions">
+        <div class="panel-header">
+          <h2 class="panel-title space-font">Minecraft Versions</h2>
+          <p class="panel-subtitle">Select, install, and manage Minecraft releases and snapshots.</p>
+        </div>
+
+        <!-- Profiles & Instances Section -->
+        <div class="profiles-section-card" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; margin-bottom: 25px; backdrop-filter: blur(10px);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <h3 class="space-font" style="font-size: 14px; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 8px; margin: 0;">
+              <i data-lucide="git-branch" style="color: var(--accent-cyan);"></i> Profiles & Instances
+            </h3>
+            <button class="primary-btn" id="btn-show-add-profile" style="padding: 6px 12px; font-size: 11px; border-radius: 6px; font-weight: 600;">
+              <i data-lucide="plus"></i> Add Profile
+            </button>
+          </div>
+
+          <!-- Add Profile Form (hidden by default) -->
+          <div id="add-profile-form" class="hidden" style="background: rgba(8, 6, 16, 0.4); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 10px; padding: 15px; margin-bottom: 15px;">
+            <h4 style="color: #fff; font-size: 12px; margin-top: 0; margin-bottom: 12px;">Create New Instance Profile</h4>
+            <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end;">
+              <div style="flex: 1; min-width: 150px;">
+                <label style="font-size: 10px; color: var(--text-muted); display: block; margin-bottom: 4px;">Profile Name</label>
+                <input type="text" id="new-profile-name" placeholder="e.g. My Fabric Modded" style="background: rgba(8, 6, 16, 0.7); border: 1px solid var(--border-color); color: #fff; padding: 8px 12px; border-radius: 6px; font-size: 12px; width: 100%;">
+              </div>
+              <div style="width: 150px;">
+                <label style="font-size: 10px; color: var(--text-muted); display: block; margin-bottom: 4px;">Base Version</label>
+                <select id="new-profile-version" style="background: rgba(8, 6, 16, 0.7); border: 1px solid var(--border-color); color: #fff; padding: 8px 12px; border-radius: 6px; font-size: 12px; width: 100%; cursor: pointer;">
+                  <!-- Populated dynamically -->
+                </select>
+              </div>
+              <div style="width: 120px;">
+                <label style="font-size: 10px; color: var(--text-muted); display: block; margin-bottom: 4px;">Icon Logo</label>
+                <select id="new-profile-logo" style="background: rgba(8, 6, 16, 0.7); border: 1px solid var(--border-color); color: #fff; padding: 8px 12px; border-radius: 6px; font-size: 12px; width: 100%; cursor: pointer;">
+                  <option value="vanilla">📦 Vanilla Box</option>
+                  <option value="fabric">⚡ Fabric Zap</option>
+                  <option value="forge">🛠️ Forge Anvil</option>
+                  <option value="pvp">⚔️ Swords (PvP)</option>
+                  <option value="survival">🛡️ Shield (Survival)</option>
+                  <option value="diamond">💎 Diamond Gem</option>
+                  <option value="custom">⚙️ Custom Cog</option>
+                  <option value="feather">🪶 Feather Client</option>
+                  <option value="lunar">🌙 Lunar Client</option>
+                  <option value="badlion">🦁 Badlion Client</option>
+                </select>
+              </div>
+              <div style="flex: 1; min-width: 250px;">
+                <label style="font-size: 10px; color: var(--text-muted); display: block; margin-bottom: 4px;">Standalone Launcher Executable (Optional)</label>
+                <div class="file-picker">
+                  <input type="text" id="new-profile-external" placeholder="e.g. C:\Path\To\Feather Launcher.exe" style="background: rgba(8, 6, 16, 0.7); border: 1px solid var(--border-color); color: #fff; padding: 8px 12px; border-radius: 6px; font-size: 12px;" readonly>
+                  <button class="secondary-btn" id="btn-browse-new-external" style="padding: 8px 12px; font-size: 11px;">
+                    <i data-lucide="file-digit"></i>
+                    <span>Browse</span>
+                  </button>
+                </div>
+              </div>
+              <div style="display: flex; gap: 8px;">
+                <button class="primary-btn" id="btn-save-new-profile" style="padding: 8px 14px; font-size: 12px; border-radius: 6px;">Create</button>
+                <button class="secondary-btn" id="btn-cancel-new-profile" style="padding: 8px 14px; font-size: 12px; border-radius: 6px;">Cancel</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Edit Profile Form (hidden by default) -->
+          <div id="edit-profile-form" class="hidden" style="background: rgba(8, 6, 16, 0.4); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 10px; padding: 15px; margin-bottom: 15px;">
+            <h4 style="color: #fff; font-size: 12px; margin-top: 0; margin-bottom: 12px;">Edit Instance Profile</h4>
+            <input type="hidden" id="edit-profile-id">
+            <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end;">
+              <div style="flex: 1; min-width: 150px;">
+                <label style="font-size: 10px; color: var(--text-muted); display: block; margin-bottom: 4px;">Profile Name</label>
+                <input type="text" id="edit-profile-name" style="background: rgba(8, 6, 16, 0.7); border: 1px solid var(--border-color); color: #fff; padding: 8px 12px; border-radius: 6px; font-size: 12px; width: 100%;">
+              </div>
+              <div style="width: 120px;">
+                <label style="font-size: 10px; color: var(--text-muted); display: block; margin-bottom: 4px;">Icon Logo</label>
+                <select id="edit-profile-logo" style="background: rgba(8, 6, 16, 0.7); border: 1px solid var(--border-color); color: #fff; padding: 8px 12px; border-radius: 6px; font-size: 12px; width: 100%; cursor: pointer;">
+                  <option value="vanilla">📦 Vanilla Box</option>
+                  <option value="fabric">⚡ Fabric Zap</option>
+                  <option value="forge">🛠️ Forge Anvil</option>
+                  <option value="pvp">⚔️ Swords (PvP)</option>
+                  <option value="survival">🛡️ Shield (Survival)</option>
+                  <option value="diamond">💎 Diamond Gem</option>
+                  <option value="custom">⚙️ Custom Cog</option>
+                  <option value="feather">🪶 Feather Client</option>
+                  <option value="lunar">🌙 Lunar Client</option>
+                  <option value="badlion">🦁 Badlion Client</option>
+                </select>
+              </div>
+              <div style="flex: 1; min-width: 250px;">
+                <label style="font-size: 10px; color: var(--text-muted); display: block; margin-bottom: 4px;">Standalone Launcher Executable (Optional)</label>
+                <div class="file-picker">
+                  <input type="text" id="edit-profile-external" placeholder="e.g. C:\Path\To\Feather Launcher.exe" style="background: rgba(8, 6, 16, 0.7); border: 1px solid var(--border-color); color: #fff; padding: 8px 12px; border-radius: 6px; font-size: 12px;" readonly>
+                  <button class="secondary-btn" id="btn-browse-edit-external" style="padding: 8px 12px; font-size: 11px;">
+                    <i data-lucide="file-digit"></i>
+                    <span>Browse</span>
+                  </button>
+                </div>
+              </div>
+              <div style="display: flex; gap: 8px;">
+                <button class="primary-btn" id="btn-save-edit-profile" style="padding: 8px 14px; font-size: 12px; border-radius: 6px;">Save Changes</button>
+                <button class="secondary-btn" id="btn-cancel-edit-profile" style="padding: 8px 14px; font-size: 12px; border-radius: 6px;">Cancel</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Profiles list container -->
+          <div id="profiles-list" style="display: flex; flex-direction: column; gap: 10px; max-height: 250px; overflow-y: auto; padding-right: 5px;">
+            <!-- Rendered dynamically in renderer.js -->
+          </div>
+        </div>
+
+        <!-- Mod Loader Installer Card -->
+        <div class="mod-loader-installer-card" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; margin-bottom: 25px; backdrop-filter: blur(10px);">
+          <h3 class="space-font" style="font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
+            <i data-lucide="cpu" style="color: var(--accent-cyan);"></i> Install Mod Loader
+          </h3>
+          <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 15px;">Automate Fabric or Forge installation for any version of Minecraft. Make sure you select the correct version below.</p>
+          
+          <div style="display: flex; flex-wrap: wrap; gap: 15px; align-items: center;">
+            <div class="select-wrapper" style="width: 180px; position: relative; display: flex; align-items: center;">
+              <i data-lucide="git-branch" class="select-icon" style="color: var(--primary); position: absolute; left: 14px; width: 16px; height: 16px; pointer-events: none; z-index: 2;"></i>
+              <select id="loader-install-mc-version" style="background: rgba(8, 6, 16, 0.7); border: 1px solid var(--border-color); color: #fff; padding: 10px 14px 10px 38px; border-radius: 8px; font-size: 13px; width: 100%; cursor: pointer;">
+                <option value="1.20.4">1.20.4</option>
+                <option value="1.20.1">1.20.1</option>
+                <option value="1.19.4">1.19.4</option>
+                <option value="1.18.2">1.18.2</option>
+                <option value="1.16.5">1.16.5</option>
+              </select>
+            </div>
+            
+            <div style="display: flex; gap: 10px;">
+              <button class="primary-btn" id="btn-install-fabric" style="padding: 8px 16px; font-size: 12px; background: linear-gradient(135deg, #2b9348 0%, #007f5f 100%); box-shadow: 0 4px 12px rgba(0, 127, 95, 0.4); border: none; cursor: pointer; border-radius: 8px; font-weight: 600; color: white;">
+                <i data-lucide="download"></i> Install Fabric
+              </button>
+              <button class="primary-btn" id="btn-install-forge" style="padding: 8px 16px; font-size: 12px; background: linear-gradient(135deg, #df5b00 0%, #b23b00 100%); box-shadow: 0 4px 12px rgba(223, 91, 0, 0.4); border: none; cursor: pointer; border-radius: 8px; font-weight: 600; color: white;">
+                <i data-lucide="download"></i> Install Forge
+              </button>
+            </div>
+            
+            <span id="loader-install-status" style="font-size: 12px; font-weight: 600; color: var(--accent-cyan); margin-left: 10px;"></span>
+          </div>
+          <div id="forge-notice" style="font-size: 11px; color: var(--accent-pink); margin-top: 10px; display: none; font-weight: 600;"></div>
+        </div>
+        
+        <div class="version-filters">
+          <div class="search-box">
+            <i data-lucide="search" class="search-icon"></i>
+            <input type="text" id="version-search" placeholder="Search versions (e.g. 1.20)...">
+          </div>
+          <div class="filter-toggles">
+            <label class="toggle-checkbox">
+              <input type="checkbox" id="toggle-releases" checked>
+              <span>Releases</span>
+            </label>
+            <label class="toggle-checkbox">
+              <input type="checkbox" id="toggle-snapshots">
+              <span>Snapshots</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="version-list-scroll">
+          <table class="version-table">
+            <thead>
+              <tr>
+                <th>Version</th>
+                <th>Type</th>
+                <th>Release Date</th>
+                <th style="text-align: right;">Action</th>
+              </tr>
+            </thead>
+            <tbody id="version-list-tbody">
+              <!-- Dynamically populated -->
+              <tr>
+                <td colspan="4" class="table-loading">Loading version list from Mojang...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- SKINS TAB -->
+      <section class="tab-panel" id="tab-skins">
+        <div class="panel-header">
+          <h2 class="panel-title space-font">Skin & Cape Customization</h2>
+          <p class="panel-subtitle">Upload your skin and cape files. Other Crafter Launcher users will see them in multiplayer!</p>
+        </div>
+
+        <div class="skins-grid">
+          <!-- 2D Character Preview -->
+          <div class="skin-preview-card">
+            <h3>Character Preview</h3>
+            <div class="canvas-container">
+              <canvas id="skin-canvas" width="160" height="320"></canvas>
+            </div>
+            <span class="preview-hint">Retro 2D pixel rendering</span>
+          </div>
+
+          <!-- Controls Container -->
+          <div class="skin-controls-container" style="display: flex; flex-direction: column; gap: 20px;">
+            
+            <!-- Upload Skin Controls -->
+            <div class="skin-upload-card">
+              <h3>Upload Skin File</h3>
+              <p class="card-desc">Drag and drop your standard Minecraft skin file (.png, 64x64 or 64x32) or click to browse.</p>
+              
+              <div class="drop-zone" id="skin-drop-zone">
+                <i data-lucide="upload-cloud" class="drop-icon"></i>
+                <span>Drag & Drop skin PNG here</span>
+                <span class="drop-or">or</span>
+                <button class="secondary-btn" id="btn-browse-skin">Choose File</button>
+                <input type="file" id="skin-file-input" accept="image/png" style="display: none;">
+              </div>
+
+              <div class="skin-rules">
+                <h4>Skin Requirements:</h4>
+                <ul>
+                  <li>Must be a valid PNG image</li>
+                  <li>Dimensions: 64x64 or 64x32 pixels</li>
+                  <li>Transparency is supported for outer layers</li>
+                </ul>
+              </div>
+
+              <div class="skin-actions">
+                <button class="primary-btn" id="btn-apply-skin" disabled>
+                  <i data-lucide="check"></i>
+                  <span>Apply Skin</span>
+                </button>
+                <button class="secondary-btn danger-btn-hover" id="btn-reset-skin">
+                  <i data-lucide="refresh-cw"></i>
+                  <span>Reset to Default</span>
+                </button>
+              </div>
+              <span class="skin-status" id="skin-status-msg"></span>
+            </div>
+
+            <!-- Upload Cape Controls -->
+            <div class="skin-upload-card" id="cape-upload-card">
+              <h3>Upload Cape File</h3>
+              <p class="card-desc">Drag and drop your custom cape file (.png, 64x32 or 22x17) or click to browse.</p>
+              
+              <div class="drop-zone" id="cape-drop-zone">
+                <i data-lucide="upload-cloud" class="drop-icon"></i>
+                <span>Drag & Drop cape PNG here</span>
+                <span class="drop-or">or</span>
+                <button class="secondary-btn" id="btn-browse-cape">Choose File</button>
+                <input type="file" id="cape-file-input" accept="image/png" style="display: none;">
+              </div>
+
+              <div class="skin-rules">
+                <h4>Cape Requirements:</h4>
+                <ul>
+                  <li>Must be a valid PNG image</li>
+                  <li>Dimensions: typically 64x32 or 22x17 pixels</li>
+                  <li>Syncs with other launcher users in multiplayer</li>
+                </ul>
+              </div>
+
+              <div class="skin-actions">
+                <button class="primary-btn" id="btn-apply-cape" disabled>
+                  <i data-lucide="check"></i>
+                  <span>Apply Cape</span>
+                </button>
+                <button class="secondary-btn danger-btn-hover" id="btn-reset-cape">
+                  <i data-lucide="refresh-cw"></i>
+                  <span>Reset Cape</span>
+                </button>
+              </div>
+              <span class="skin-status" id="cape-status-msg"></span>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- MODS TAB -->
+      <section class="tab-panel" id="tab-mods">
+        <div class="panel-header">
+          <h2 class="panel-title space-font">Modrinth Library</h2>
+          <p class="panel-subtitle">Search and install mods and modpacks directly from Modrinth with one click.</p>
+        </div>
+
+        <!-- Mods vs Modpacks Toggle -->
+        <div class="mods-type-toggle" style="margin-bottom: 20px; display: flex; gap: 10px;">
+          <button class="segment-btn active" id="btn-toggle-mods" data-type="mod">
+            <i data-lucide="package" style="width: 16px; height: 16px;"></i>
+            <span>Mods</span>
+          </button>
+          <button class="segment-btn" id="btn-toggle-modpacks" data-type="modpack">
+            <i data-lucide="folder-archive" style="width: 16px; height: 16px;"></i>
+            <span>Modpacks</span>
+          </button>
+          <button class="segment-btn" id="btn-toggle-resourcepacks" data-type="resourcepack">
+            <i data-lucide="palette" style="width: 16px; height: 16px;"></i>
+            <span>Resource Packs</span>
+          </button>
+        </div>
+
+        <!-- Featured PvP Mods (Feather Client style) -->
+        <div id="pvp-mods-container" style="margin-bottom: 25px;">
+          <h3 class="space-font" style="font-size: 14px; font-weight: 700; color: var(--accent-cyan); margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+            <i data-lucide="shield"></i> Featured PvP Mods (Feather Client Presets)
+          </h3>
+          <div class="pvp-mods-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 15px;">
+            <!-- Sodium -->
+            <div class="pvp-mod-card" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 15px; display: flex; flex-direction: column; justify-content: space-between; transition: all 0.3s ease;">
+              <div>
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                  <div style="width: 32px; height: 32px; background: rgba(0, 245, 212, 0.1); border-radius: 6px; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(0, 245, 212, 0.2);">
+                    <i data-lucide="zap" style="color: var(--accent-cyan); width: 18px; height: 18px;"></i>
+                  </div>
+                  <strong style="color: #fff; font-size: 14px;">Sodium</strong>
+                </div>
+                <p style="font-size: 11px; color: var(--text-muted); line-height: 1.4; margin-bottom: 12px;">Modern rendering engine optimization. Greatly improves frame rates and reduces stuttering.</p>
+              </div>
+              <button class="primary-btn quick-install-btn" data-project-id="AANobbMI" style="padding: 6px 12px; font-size: 11px; font-weight: 700; width: 100%; border-radius: 6px;">
+                <i data-lucide="download-cloud" style="width: 14px; height: 14px;"></i> Quick Install
+              </button>
+            </div>
+
+            <!-- Iris Shaders -->
+            <div class="pvp-mod-card" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 15px; display: flex; flex-direction: column; justify-content: space-between; transition: all 0.3s ease;">
+              <div>
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                  <div style="width: 32px; height: 32px; background: rgba(157, 78, 221, 0.1); border-radius: 6px; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(157, 78, 221, 0.2);">
+                    <i data-lucide="sparkles" style="color: var(--primary); width: 18px; height: 18px;"></i>
+                  </div>
+                  <strong style="color: #fff; font-size: 14px;">Iris Shaders</strong>
+                </div>
+                <p style="font-size: 11px; color: var(--text-muted); line-height: 1.4; margin-bottom: 12px;">Modern shaders mod. Fully compatible with existing OptiFine-format shader packs.</p>
+              </div>
+              <button class="primary-btn quick-install-btn" data-project-id="YL57xq9U" style="padding: 6px 12px; font-size: 11px; font-weight: 700; width: 100%; border-radius: 6px;">
+                <i data-lucide="download-cloud" style="width: 14px; height: 14px;"></i> Quick Install
+              </button>
+            </div>
+
+            <!-- Zoomify -->
+            <div class="pvp-mod-card" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 15px; display: flex; flex-direction: column; justify-content: space-between; transition: all 0.3s ease;">
+              <div>
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                  <div style="width: 32px; height: 32px; background: rgba(0, 245, 212, 0.1); border-radius: 6px; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(0, 245, 212, 0.2);">
+                    <i data-lucide="search" style="color: var(--accent-cyan); width: 18px; height: 18px;"></i>
+                  </div>
+                  <strong style="color: #fff; font-size: 14px;">Zoomify</strong>
+                </div>
+                <p style="font-size: 11px; color: var(--text-muted); line-height: 1.4; margin-bottom: 12px;">Cinematic camera zoom. Infinite configurability, zoom transitions, and scroll limits.</p>
+              </div>
+              <button class="primary-btn quick-install-btn" data-project-id="w7ThoJFB" style="padding: 6px 12px; font-size: 11px; font-weight: 700; width: 100%; border-radius: 6px;">
+                <i data-lucide="download-cloud" style="width: 14px; height: 14px;"></i> Quick Install
+              </button>
+            </div>
+
+            <!-- Controlify -->
+            <div class="pvp-mod-card" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 15px; display: flex; flex-direction: column; justify-content: space-between; transition: all 0.3s ease;">
+              <div>
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                  <div style="width: 32px; height: 32px; background: rgba(157, 78, 221, 0.1); border-radius: 6px; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(157, 78, 221, 0.2);">
+                    <i data-lucide="gamepad-2" style="color: var(--primary); width: 18px; height: 18px;"></i>
+                  </div>
+                  <strong style="color: #fff; font-size: 14px;">Controlify / Keybinds</strong>
+                </div>
+                <p style="font-size: 11px; color: var(--text-muted); line-height: 1.4; margin-bottom: 12px;">Full controller support and keybind customization for standard layouts.</p>
+              </div>
+              <button class="primary-btn quick-install-btn" data-project-id="DOUdJVEm" style="padding: 6px 12px; font-size: 11px; font-weight: 700; width: 100%; border-radius: 6px;">
+                <i data-lucide="download-cloud" style="width: 14px; height: 14px;"></i> Quick Install
+              </button>
+            </div>
+
+            <!-- ToggleSprint -->
+            <div class="pvp-mod-card" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 15px; display: flex; flex-direction: column; justify-content: space-between; transition: all 0.3s ease;">
+              <div>
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                  <div style="width: 32px; height: 32px; background: rgba(0, 245, 212, 0.1); border-radius: 6px; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(0, 245, 212, 0.2);">
+                    <i data-lucide="navigation" style="color: var(--accent-cyan); width: 18px; height: 18px;"></i>
+                  </div>
+                  <strong style="color: #fff; font-size: 14px;">ToggleSprint / Sneak</strong>
+                </div>
+                <p style="font-size: 11px; color: var(--text-muted); line-height: 1.4; margin-bottom: 12px;">Automates sprinting and sneaking. Increases speed control without key straining.</p>
+              </div>
+              <button class="primary-btn quick-install-btn" data-project-id="gQ6IIk5e" style="padding: 6px 12px; font-size: 11px; font-weight: 700; width: 100%; border-radius: 6px;">
+                <i data-lucide="download-cloud" style="width: 14px; height: 14px;"></i> Quick Install
+              </button>
+            </div>
+
+            <!-- Armor HUD -->
+            <div class="pvp-mod-card" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 15px; display: flex; flex-direction: column; justify-content: space-between; transition: all 0.3s ease;">
+              <div>
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                  <div style="width: 32px; height: 32px; background: rgba(157, 78, 221, 0.1); border-radius: 6px; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(157, 78, 221, 0.2);">
+                    <i data-lucide="shield" style="color: var(--primary); width: 18px; height: 18px;"></i>
+                  </div>
+                  <strong style="color: #fff; font-size: 14px;">Armor Status HUD</strong>
+                </div>
+                <p style="font-size: 11px; color: var(--text-muted); line-height: 1.4; margin-bottom: 12px;">Displays current armor durability and items held on screen.</p>
+              </div>
+              <button class="primary-btn quick-install-btn" data-project-id="wF189hn9" style="padding: 6px 12px; font-size: 11px; font-weight: 700; width: 100%; border-radius: 6px;">
+                <i data-lucide="download-cloud" style="width: 14px; height: 14px;"></i> Quick Install
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="mods-filters">
+          <div class="search-box">
+            <i data-lucide="search" class="search-icon"></i>
+            <input type="text" id="mods-search-input" placeholder="Search mods (e.g. Sodium, Iris, JEI)...">
+          </div>
+          <div class="select-wrapper select-loader-wrapper" id="mods-loader-wrapper" style="width: 140px; margin-right: 10px;">
+            <select id="mods-loader-select">
+              <option value="fabric">Fabric</option>
+              <option value="forge">Forge</option>
+            </select>
+          </div>
+          <button class="primary-btn" id="btn-search-mods">Search</button>
+        </div>
+
+        <div class="mods-scroll-area">
+          <div class="mods-grid" id="mods-search-results">
+            <div class="mods-loading">Search above to discover items.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SETTINGS TAB -->
+      <section class="tab-panel" id="tab-settings">
+        <div class="panel-header">
+          <h2 class="panel-title space-font">Launcher Settings</h2>
+          <p class="panel-subtitle">Fine-tune memory allocation, directories, and directories properties.</p>
+        </div>
+
+        <div class="settings-grid">
+          <!-- Memory Allocation Card -->
+          <div class="settings-card">
+            <h3><i data-lucide="cpu"></i> Java Memory Allocation</h3>
+            <p class="card-desc">Allocate system RAM for Minecraft. Larger modpacks require more RAM.</p>
+            
+            <div class="ram-sliders">
+              <div class="ram-input-group">
+                <div class="ram-labels">
+                  <span>Maximum RAM (Allocated)</span>
+                  <span class="ram-badge" id="max-ram-val">4096 MB</span>
+                </div>
+                <input type="range" class="ram-slider" id="max-ram-slider" min="1024" max="16384" step="512" value="4096">
+              </div>
+
+              <div class="ram-input-group">
+                <div class="ram-labels">
+                  <span>Minimum RAM (Initial)</span>
+                  <span class="ram-badge" id="min-ram-val">1024 MB</span>
+                </div>
+                <input type="range" class="ram-slider" id="min-ram-slider" min="512" max="8192" step="512" value="1024">
+              </div>
+            </div>
+          </div>
+
+          <!-- Directories & Java Path Card -->
+          <div class="settings-card">
+            <h3><i data-lucide="folder"></i> File Directories & Java</h3>
+            <p class="card-desc">Configure file directories where game files are downloaded and Java is located.</p>
+            
+            <div class="setting-row">
+              <label for="mc-dir-input">Minecraft Directory</label>
+              <div class="file-picker">
+                <input type="text" id="mc-dir-input" readonly>
+                <button class="secondary-btn" id="btn-browse-mc-dir">
+                  <i data-lucide="folder-open"></i>
+                  <span>Browse</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="setting-row">
+              <label for="java-path-input">Java Executable Path</label>
+              <div class="file-picker">
+                <input type="text" id="java-path-input" placeholder="Use default system Java (Recommended)">
+                <button class="secondary-btn" id="btn-browse-java">
+                  <i data-lucide="file-digit"></i>
+                  <span>Browse</span>
+                </button>
+              </div>
+              <span class="input-hint">Leave blank or "java" to use standard system Java runtime.</span>
+            </div>
+
+            <div class="setting-row" style="margin-top: 10px;">
+              <label for="skin-server-input">Central Skin Server URL</label>
+              <div class="file-picker">
+                <input type="text" id="skin-server-input" placeholder="e.g. http://localhost:3004">
+              </div>
+              <span class="input-hint">Shared server URL to sync custom skins in multiplayer.</span>
+            </div>
+
+            <div class="setting-row" style="margin-top: 10px;">
+              <label for="gemini-key-input">Gemini API Key</label>
+              <div class="file-picker">
+                <input type="password" id="gemini-key-input" placeholder="Paste your Google Gemini API Key here">
+              </div>
+              <span class="input-hint">Enable online LLM crash log analysis (Optional).</span>
+            </div>
+
+            <div class="setting-row" style="margin-top: 15px;">
+              <label class="toggle-checkbox">
+                <input type="checkbox" id="fps-booster-input" checked>
+                <span style="font-weight: 700; color: #fff;">Enable FPS Booster (Optimal JVM Flags)</span>
+              </label>
+              <span class="input-hint" style="margin-top: 4px;">Injects low-latency Garbage Collector settings to boost game framerates.</span>
+            </div>
+          </div>
+
+          <!-- Theme Customization Card -->
+          <div class="settings-card">
+            <h3><i data-lucide="palette"></i> Launcher Theme Customization</h3>
+            <p class="card-desc">Personalize your launcher aesthetic by selecting a color profile theme.</p>
+            
+            <div class="setting-row">
+              <label for="theme-select">Select Accent Theme</label>
+              <div class="select-wrapper" style="position: relative; display: flex; align-items: center;">
+                <select id="theme-select" style="background: rgba(8, 6, 16, 0.8); border: 1px solid var(--border-color); color: #fff; padding: 10px 14px 10px 15px; border-radius: 8px; font-size: 13px; width: 100%; cursor: pointer;">
+                  <option value="purple">Aura Purple (Default)</option>
+                  <option value="cyan">Aqua Cyan</option>
+                  <option value="green">Emerald Green</option>
+                  <option value="red">Crimson Red</option>
+                </select>
+              </div>
+              <span class="input-hint">Accent color changes will apply instantly and persist dynamically.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-actions">
+          <button class="primary-btn" id="btn-save-settings">
+            <i data-lucide="save"></i>
+            <span>Save Settings</span>
+          </button>
+          <button class="secondary-btn danger-btn-hover" id="btn-clear-appdata" style="margin-left: auto;">
+            <i data-lucide="trash-2"></i>
+            <span>Reset Launcher Data</span>
+          </button>
+          <span class="save-status" id="save-status-msg"></span>
+        </div>
+      </section>
+
+      <!-- CONSOLE LOGS TAB -->
+      <section class="tab-panel" id="tab-logs">
+        <div class="panel-header">
+          <div class="panel-header-inline">
+            <div>
+              <h2 class="panel-title space-font">Console Logs</h2>
+              <p class="panel-subtitle">View real-time console messages and crash dumps from Minecraft.</p>
+            </div>
+            <div style="display: flex; gap: 10px;">
+              <button class="primary-btn" id="btn-analyze-logs">
+                <i data-lucide="sparkles"></i>
+                <span>Analyze with AI</span>
+              </button>
+              <button class="secondary-btn danger-btn-hover" id="btn-clear-logs">
+                <i data-lucide="trash-2"></i>
+                <span>Clear Console</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <div class="console-wrapper">
+          <div class="console-log" id="console-log">
+            <span class="log-line system-line">[Crafter System] Console initialized. Ready to launch Minecraft...</span>
+          </div>
+        </div>
+
+        <!-- Floating AI Debug Modal -->
+        <div class="ai-debug-modal hidden" id="ai-debug-modal">
+          <div class="ai-debug-card">
+            <div class="ai-debug-header">
+              <h3><i data-lucide="sparkles" style="color: var(--accent-cyan);"></i> Crafter AI Crash Analysis</h3>
+              <button class="control-btn close-btn" id="btn-close-ai-debug"><i data-lucide="x"></i></button>
+            </div>
+            <div class="ai-debug-body" id="ai-debug-content">
+              Analyzing console logs...
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      <!-- Mod Versions Selector Modal -->
+      <div class="versions-modal hidden" id="mod-versions-modal">
+        <div class="versions-modal-card">
+          <div class="versions-modal-header">
+            <div class="versions-modal-title-wrapper">
+              <img class="versions-modal-icon" id="versions-modal-icon" src="" alt="Mod Icon">
+              <div>
+                <h3 id="versions-modal-title" class="space-font">Select Mod Version</h3>
+                <p class="versions-modal-desc" id="versions-modal-desc"></p>
+              </div>
+            </div>
+            <button class="control-btn close-btn" id="btn-close-versions-modal"><i data-lucide="x"></i></button>
+          </div>
+          <div class="versions-modal-body">
+            <div class="versions-table-wrapper">
+              <table class="versions-table">
+                <thead>
+                  <tr>
+                    <th>Version</th>
+                    <th>Type</th>
+                    <th>Released</th>
+                    <th style="text-align: right;">Action</th>
+                  </tr>
+                </thead>
+                <tbody id="versions-modal-list">
+                  <!-- Mapped compatible version rows -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+
+  </div>
+
+  <script>
+    // Initialize Lucide Icons
+    lucide.createIcons();
+  </script>
+  <script src="renderer.js"></script>
+</body>
+</html>
